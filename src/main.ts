@@ -1,9 +1,17 @@
+import { ValidationPipe } from '@nestjs/common'
 import { NestFactory } from '@nestjs/core'
-import { ComputerModule } from '../src-computer/computer/computer.module'
+import { AppModule } from './app.module'
 
 async function bootstrap() {
-    const app = await NestFactory.create(ComputerModule)
+    const app = await NestFactory.create(AppModule)
 
-    await app.listen(3001)
+    app.useGlobalPipes(
+        new ValidationPipe({
+            // 过滤多余内容
+            whitelist: true
+        })
+    )
+
+    await app.listen(3000)
 }
 bootstrap()
