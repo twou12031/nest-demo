@@ -36,3 +36,4 @@ lerna-debug.log*
 
 # databse file
 *.sqlite
+db.sqlite
