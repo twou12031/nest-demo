@@ -8,7 +8,8 @@ import {
     Post,
     Query,
     NotFoundException,
-    Session
+    Session,
+    UseGuards
     // UseInterceptors
 } from '@nestjs/common'
 import { CreateUserDto } from './dtos/create-user.dto'
@@ -17,17 +18,27 @@ import { UpdateUserDto } from './dtos/update-user.dto'
 import { Serialize } from '../interceptors/serialize.interceptor'
 import { UserDto } from './dtos/user.dto'
 import { AuthService } from './auth.service'
+import { User } from './user.entity'
+import { CurrentUser } from './decorators/current-user.decorator'
+import { AuthGuard } from '../guards/auth.guard'
 
 @Controller('auth')
+@Serialize(UserDto)
 export class UsersController {
     constructor(
         private usersService: UsersService,
         private authService: AuthService
     ) {}
 
+    // @Get('/whoami')
+    // whoAmI(@Session() session: any) {
+    //     return this.usersService.findOne(session.userId)
+    // }
+
     @Get('/whoami')
-    whoAmI(@Session() session: any) {
-        return this.usersService.findOne(session.userId)
+    @UseGuards(AuthGuard)
+    whoAmI(@CurrentUser() user: User) {
+        return user
     }
 
     @Post('/signout')
@@ -36,7 +47,6 @@ export class UsersController {
     }
 
     @Post('/signup')
-    @Serialize(UserDto)
     async createUser(@Body() body: CreateUserDto, @Session() session: any) {
         const { email, password } = body
         // return this.authService.signup(email, password)
@@ -46,7 +56,6 @@ export class UsersController {
     }
 
     @Post('/signin')
-    @Serialize(UserDto)
     async signin(@Body() body: CreateUserDto, @Session() session: any) {
         const { email, password } = body
         // return this.authService.signin(email, password)
@@ -58,7 +67,7 @@ export class UsersController {
     @Get('/:id')
     // @UseInterceptors(SerializeInterceptor)
     // @UseInterceptors(new SerializeInterceptor(UserDto))
-    @Serialize(UserDto)
+    // @Serialize(UserDto)
     async findUser(@Param('id') id: string) {
         // SerializeInterceptor: 2
         console.log('@findUser controller')
