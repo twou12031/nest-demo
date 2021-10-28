@@ -15,10 +15,13 @@ describe('AppController (e2e)', () => {
         await app.init()
     })
 
-    it('/ (GET)', () => {
-        return request(app.getHttpServer())
-            .get('/')
-            .expect(200)
-            .expect('Hello World!')
+    // it('/ (GET)', () => {
+    //     return request(app.getHttpServer())
+    //         .get('/')
+    //         .expect(200)
+    //         .expect('Hello World!')
+    // })
+    it('app has been created', async () => {
+        expect(app).toBeDefined()
     })
 })
